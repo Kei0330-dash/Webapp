@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>掲示板</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>掲示板</h1>
+    <form id="postForm">
+        <input type="text" id="content" placeholder="投稿内容" required>
+        <button type="submit">投稿</button>
+    </form>
+    <div id="posts"></div>
+
+    <script>
+        document.getElementById('postForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const content = document.getElementById('content').value;
+            fetch('/add', {
+                method: 'POST',
+                body: new URLSearchParams({'content': content}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(response => response.json()).then(data => {
+                if (data.result === 'success') {
+                    const post = document.createElement('div');
+                    post.className = 'post';
+                    post.textContent = content;
+                    document.getElementById('posts').appendChild(post);
+                    document.getElementById('content').value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

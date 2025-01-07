@@ -25,7 +25,7 @@
                 if (data.result === 'success') {
                     const post = document.createElement('div');
                     post.className = 'post';
-                    post.innerHTML = `<strong>${data.id}</strong> ${formatDate(data.timestamp)}:<br>${content}`;
+                    post.innerHTML = `<strong>${data.id}</strong> ${formatDate(data.timestamp)}:<br>${convertToLinks(content)}`;
                     document.getElementById('posts').appendChild(post);
                     document.getElementById('content').value = '';
                 }
@@ -41,7 +41,7 @@
                 data.forEach(post => {
                     const postDiv = document.createElement('div');
                     postDiv.className = 'post';
-                    postDiv.innerHTML = `<strong>${post.id}</strong> ${formatDate(post.timestamp)}:<br>${post.content}`;
+                    postDiv.innerHTML = `<strong>${post.id}</strong> ${formatDate(post.timestamp)}:<br>${convertToLinks(post.content)}`;
                     postsDiv.appendChild(postDiv);
                 });
             });
@@ -57,6 +57,12 @@
             const minutes = String(date.getMinutes()).padStart(2, '0');
             const seconds = String(date.getSeconds()).padStart(2, '0');
             return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        // リンクをハイパーリンクに変換する関数
+        function convertToLinks(text) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
         }
     </script>
 </body>

@@ -27,7 +27,7 @@ flaskとかsqlite3とかは入れてください。pipすればok
 │   ├── favicon.ico<br>
 │   ├── index.css<br>
 │   ├── index.html  ← トップページでスレッドの一覧を表示<br>
-│   ├── thread.html  ← スレッド用のテンプレート<br>
+│   ├── thread_template.html  ← スレッド用のテンプレート<br>
 │   ├── threads/    ← スレッドのHTMLファイルを格納するディレクトリを作成<br>
 │       ├── thread1.html<br>
 │       ├── thread2.html<br>

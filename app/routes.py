@@ -1,7 +1,8 @@
 from app import app
-from flask import render_template, request, jsonify, redirect, url_for
+from flask import render_template, request, jsonify, redirect, url_for, send_from_directory
 from app.models import get_all_threads, get_thread_by_id, create_new_thread
 import sqlite3
+import os
 DATABASE = "database.db"
 
 @app.route('/')
@@ -9,6 +10,12 @@ def index():
     # スレッド一覧をデータベースから取得
     threads = get_all_threads()
     return render_template('index.html')
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'templates'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 @app.route('/add', methods=['POST'])
 def add_post():

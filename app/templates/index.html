@@ -4,38 +4,60 @@
     <meta charset="UTF-8">
     <title>ちゃんねる555</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-	<link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
 </head>
 <body>
     <h1>掲示板</h1>
-	<form action="{{ url_for('create_thread') }}" method="post">
-	    <input type="text" name="title" placeholder="タイトル">
-	    <textarea name="content" placeholder="内容"></textarea>
-	    <button type="submit">スレッド作成</button>
-	</form>
-	
-    <div id="threads"></div>
+    <form id="threadForm" action="{{ url_for('create_thread') }}" method="post">
+        <input type="text" name="title" id="threadTitle" placeholder="タイトル">
+        <textarea name="content" id="threadContent" placeholder="内容"></textarea>
+        <button type="submit">スレッド作成</button>
+    </form>
+    
+    <div id="threads">
+        {% for thread in threads %}
+            <div>
+                <span>{{ thread.title }}</span>
+                <a href="{{ url_for('thread', thread_id=thread.id) }}">
+                    <button>スレッドに入る</button>
+                </a>
+            </div>
+        {% endfor %}
+    </div>  
 
     <script>
-        document.getElementById('threadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const threadTitle = document.getElementById('threadTitle').value;
-            fetch('/create_thread', {
-                method: 'POST',
-                body: new URLSearchParams({'title': threadTitle}),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).then(response => response.json()).then(data => {
-                if (data.result === 'success') {
-                    const threadLink = document.createElement('a');
-                    threadLink.href = `/thread/${data.id}`;
-                    threadLink.textContent = threadTitle;
-                    const threadDiv = document.createElement('div');
-                    threadDiv.appendChild(threadLink);
-                    document.getElementById('threads').appendChild(threadDiv);
-                    document.getElementById('threadTitle').value = '';
-                }
-            });
-        });
+	document.getElementById('threadForm').addEventListener('submit', function(e) {
+		e.preventDefault();
+		const threadTitle = document.getElementById('threadTitle').value;
+		const threadContent = document.getElementById('threadContent').value;
+
+		fetch('/create_thread', {
+			method: 'POST',
+			body: new URLSearchParams({'title': threadTitle, 'content': threadContent}),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		}).then(response => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return response.json();  // ここでエラーが起きないようにする
+		}).then(data => {
+			if (data.result === 'success') {
+				const threadLink = document.createElement('a');
+				threadLink.href = `/thread/${data.id}`;
+				threadLink.textContent = threadTitle;
+				const threadDiv = document.createElement('div');
+				threadDiv.appendChild(threadLink);
+				document.getElementById('threads').appendChild(threadDiv);
+				document.getElementById('threadTitle').value = '';
+				document.getElementById('threadContent').value = '';
+			} else {
+				console.error('Error:', data.message);
+			}
+		}).catch(error => {
+			console.error('Error:', error);
+		});
+	});
+
 
         window.onload = function() {
             fetch('/threads', {
@@ -43,12 +65,9 @@
             }).then(response => response.json()).then(data => {
                 const threadsDiv = document.getElementById('threads');
                 data.forEach(thread => {
-                    const threadLink = document.createElement('a');
-                    threadLink.href = `/thread/${thread.id}`;
-                    threadLink.textContent = thread.title;
-                    const threadDiv = document.createElement('div');
-                    threadDiv.appendChild(threadLink);
-                    threadsDiv.appendChild(threadDiv);
+                    const threadElement = document.createElement('div');
+                    threadElement.innerHTML = `<span>${thread.title}</span> <a href="/thread/${thread.id}"><button>スレッドに入る</button></a>`;
+                    threadsDiv.appendChild(threadElement);
                 });
             });
         }

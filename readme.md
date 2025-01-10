@@ -11,35 +11,36 @@ python run.py <br>
 をすれば動きます。多分。<br>
 flaskとかsqlite3とかは入れてください。pipすればok
 
-###　プロジェクト構造
-/project-root
-│
-├── /app
-│   ├── __pycache__/
-│   ├── __init__.py
-│   ├── init_db.py
-│   ├── routes.py  ← スレッド関連のルートをここに追加します
-│
-├── /static
-│   ├── style.css  ← スタイルシートを追加するならここ
-│
-├── /templates
-│   ├── favicon.ico
-│   ├── index.css
-│   ├── index.html  ← トップページでスレッドの一覧を表示
-│   ├── thread.html  ← スレッド用のテンプレート
-│   ├── threads/    ← スレッドのHTMLファイルを格納するディレクトリを作成
-│       ├── thread1.html
-│       ├── thread2.html
-│       ├── ... 追加のスレッドファイル
-│
-├── /memo
-│   ├── config.py
-│
-├── database.db  ← スレッドデータを保持
-├── readme.md
-├── requirements.txt
-├── run.py  ← アプリのエントリーポイント
+### プロジェクト構造
+/project-root<br>
+│<br>
+├── /app<br>
+│   ├── __pycache__/<br>
+│   ├── __init__.py<br>
+│   ├── init_db.py<br>
+│   ├── routes.py  ← スレッド関連のルートをここに追加します<br>
+│<br>
+├── /static<br>
+│   ├── style.css  ← スタイルシートを追加するならここ<br>
+│<br>
+├── /templates<br>
+│   ├── favicon.ico<br>
+│   ├── index.css<br>
+│   ├── index.html  ← トップページでスレッドの一覧を表示<br>
+│   ├── thread.html  ← スレッド用のテンプレート<br>
+│   ├── threads/    ← スレッドのHTMLファイルを格納するディレクトリを作成<br>
+│       ├── thread1.html<br>
+│       ├── thread2.html<br>
+│       ├── ... 追加のスレッドファイル<br>
+│<br>
+├── /memo<br>
+│   ├── config.py<br>
+│<br>
+├── database.db  ← スレッドデータを保持<br>
+├── readme.md<br>
+├── requirements.txt<br>
+├── run.py  ← アプリのエントリーポイント<br>
+
 ### routes.pyの修正
 from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)

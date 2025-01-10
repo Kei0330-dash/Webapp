@@ -7,62 +7,49 @@
 </head>
 <body>
     <h1>掲示板</h1>
-    <form id="postForm">
-        <input type="text" id="content" placeholder="投稿内容" required>
-        <button type="submit">投稿</button>
-    </form>
-    <div id="posts"></div>
+	<form action="{{ url_for('create_thread') }}" method="post">
+	    <input type="text" name="title" placeholder="タイトル">
+	    <textarea name="content" placeholder="内容"></textarea>
+	    <button type="submit">スレッド作成</button>
+	</form>
+	
+    <div id="threads"></div>
 
     <script>
-        document.getElementById('postForm').addEventListener('submit', function(e) {
+        document.getElementById('threadForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const content = document.getElementById('content').value;
-            fetch('/add', {
+            const threadTitle = document.getElementById('threadTitle').value;
+            fetch('/create_thread', {
                 method: 'POST',
-                body: new URLSearchParams({'content': content}),
+                body: new URLSearchParams({'title': threadTitle}),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(response => response.json()).then(data => {
                 if (data.result === 'success') {
-                    const post = document.createElement('div');
-                    post.className = 'post';
-                    post.innerHTML = `<strong>${data.id}</strong> ${formatDate(data.timestamp)}:<br>${convertToLinks(content)}`;
-                    document.getElementById('posts').appendChild(post);
-                    document.getElementById('content').value = '';
+                    const threadLink = document.createElement('a');
+                    threadLink.href = `/thread/${data.id}`;
+                    threadLink.textContent = threadTitle;
+                    const threadDiv = document.createElement('div');
+                    threadDiv.appendChild(threadLink);
+                    document.getElementById('threads').appendChild(threadDiv);
+                    document.getElementById('threadTitle').value = '';
                 }
             });
         });
 
-        // ページが読み込まれた時に既存の投稿を取得して表示する
         window.onload = function() {
-            fetch('/posts', {
+            fetch('/threads', {
                 method: 'GET'
             }).then(response => response.json()).then(data => {
-                const postsDiv = document.getElementById('posts');
-                data.forEach(post => {
-                    const postDiv = document.createElement('div');
-                    postDiv.className = 'post';
-                    postDiv.innerHTML = `<strong>${post.id}</strong> ${formatDate(post.timestamp)}:<br>${convertToLinks(post.content)}`;
-                    postsDiv.appendChild(postDiv);
+                const threadsDiv = document.getElementById('threads');
+                data.forEach(thread => {
+                    const threadLink = document.createElement('a');
+                    threadLink.href = `/thread/${thread.id}`;
+                    threadLink.textContent = thread.title;
+                    const threadDiv = document.createElement('div');
+                    threadDiv.appendChild(threadLink);
+                    threadsDiv.appendChild(threadDiv);
                 });
             });
-        }
-
-        // 日付を希望のフォーマットに変換する関数
-        function formatDate(timestamp) {
-            const date = new Date(timestamp);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
-        }
-
-        // リンクをハイパーリンクに変換する関数
-        function convertToLinks(text) {
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
         }
     </script>
 </body>

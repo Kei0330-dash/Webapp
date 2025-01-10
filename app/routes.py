@@ -1,16 +1,19 @@
 from app import app
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, redirect, url_for
+from app.models import get_all_threads, get_thread_by_id, create_new_thread
 import sqlite3
 DATABASE = "database.db"
 
 @app.route('/')
 def index():
+    # スレッド一覧をデータベースから取得
+    threads = get_all_threads()
     return render_template('index.html')
 
 @app.route('/add', methods=['POST'])
 def add_post():
     content = request.form['content']
-    # データベース操作をここに追加
+    # データベース操作
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute("INSERT INTO posts (content, timestamp) VALUES (?, datetime('now', 'localtime'))", (content,))
@@ -34,3 +37,20 @@ def get_posts():
 	# JSON形式に変換
     posts_list = [{'id': row[0], 'content': row[1], 'timestamp': row[2]} for row in posts]
     return jsonify(posts_list)  # JSON形式で返す
+
+@app.route('/thread/<int:thread_id>')
+def thread(thread_id):
+    # 特定のスレッドをデータベースから取得
+    thread = get_thread_by_id(thread_id)
+    return render_template('threads/thread.html', thread=thread)
+
+@app.route('/create_thread', methods=['POST'])
+def create_thread():
+    print(request.form)  # フォームデータを出力して確認
+    title = request.form.get('title')
+    content = request.form.get('content')
+    if not title or not content:
+        return "タイトルと内容は必須です", 400
+    # 新しいスレッドをデータベースに追加
+    new_thread_id = create_new_thread(title, content)
+    return redirect(url_for('index'))

@@ -1,17 +1,33 @@
 import sqlite3
 
-DATABASE = 'database.db'
+DATABASE = "database.db"
 
-conn = sqlite3.connect(DATABASE)
-cursor = conn.cursor()
+def initialize_database():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
 
-# `posts` テーブルを削除（存在する場合）
-cursor.execute('DROP TABLE IF EXISTS posts')
+    # threads テーブルを作成
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS threads (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL
+        )
+    ''')
 
-# `posts` テーブルを新たに作成
-cursor.execute("CREATE TABLE posts (id INTEGER PRIMARY KEY, content TEXT, timestamp DATETIME DEFAULT (datetime('now', 'localtime')))")
+    # posts テーブルを作成
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            thread_id INTEGER,
+            content TEXT NOT NULL,
+            timestamp TEXT NOT NULL,
+            FOREIGN KEY (thread_id) REFERENCES threads (id)
+        )
+    ''')
 
-conn.commit()
-conn.close()
+    conn.commit()
+    conn.close()
+    print("データベースが初期化されました。")
 
-# このスクリプトを実行することで、`database.db` ファイルに `posts` テーブルが作成されます。
+if __name__ == "__main__":
+    initialize_database()

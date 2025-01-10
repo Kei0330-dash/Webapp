@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>掲示板 - スレッド</title>
+    <title>掲示板</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1 id="threadTitle">掲示板 - スレッド</h1>
+    <h1>掲示板</h1>
     <form id="postForm">
         <input type="text" id="content" placeholder="投稿内容" required>
         <button type="submit">投稿</button>
@@ -14,34 +14,29 @@
     <div id="posts"></div>
 
     <script>
-        const threadId = "{{ thread_id }}";
-
         document.getElementById('postForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const content = document.getElementById('content').value;
             fetch('/add', {
                 method: 'POST',
-                body: new URLSearchParams({'content': content, 'thread_id': threadId}),
+                body: new URLSearchParams({'content': content}),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(response => response.json()).then(data => {
                 if (data.result === 'success') {
-                    loadPosts();
+                    const post = document.createElement('div');
+                    post.className = 'post';
+                    post.innerHTML = `<strong>${data.id}</strong> ${formatDate(data.timestamp)}:<br>${convertToLinks(content)}`;
+                    document.getElementById('posts').appendChild(post);
                     document.getElementById('content').value = '';
                 }
             });
         });
 
-        // ページが読み込まれた時に既存の投稿を取得して表示する
         window.onload = function() {
-            loadPosts();
-        }
-
-        function loadPosts() {
-            fetch(`/posts/${threadId}`, {
+            fetch('/posts', {
                 method: 'GET'
             }).then(response => response.json()).then(data => {
                 const postsDiv = document.getElementById('posts');
-                postsDiv.innerHTML = '';
                 data.forEach(post => {
                     const postDiv = document.createElement('div');
                     postDiv.className = 'post';
@@ -51,7 +46,6 @@
             });
         }
 
-        // 日付を希望のフォーマットに変換する関数
         function formatDate(timestamp) {
             const date = new Date(timestamp);
             const year = date.getFullYear();
@@ -63,7 +57,6 @@
             return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
         }
 
-        // リンクをハイパーリンクに変換する関数
         function convertToLinks(text) {
             const urlRegex = /(https?:\/\/[^\s]+)/g;
             return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');

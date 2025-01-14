@@ -1,20 +1,15 @@
-<!-- thread_template.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>竹井</title>
+    <title>たけい</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <h1>竹井</h1>
+    <h1>たけい</h1>
     <ul id="posts">
-        
-            <li>
-                <strong>1</strong> 2025-01-14 15:45:24:<br>ぐへへ女
-            </li>
-        
+        <!-- ここにポストが表示される -->
     </ul>
 
     <form id="postForm">
@@ -24,6 +19,29 @@
     </form>
 
     <script>
+        function updatePosts() {
+            const thread_id = document.getElementById('thread_id').value;
+            fetch(`/posts/${thread_id}`, {
+                method: 'GET'
+            }).then(response => response.json()).then(data => {
+                const postsList = document.getElementById('posts');
+                postsList.innerHTML = '';  // 現在のポストリストをクリア
+                data.forEach(post => {
+                    const postElement = document.createElement('li');
+                    postElement.innerHTML = `<strong>${post.internal_id}</strong> ${post.timestamp}:<br>${post.content}`;
+                    postsList.appendChild(postElement);
+                });
+            });
+        }
+
+        // ページロード時にポストを取得
+        window.onload = function() {
+            updatePosts();
+        }
+
+        // 定期的にポストリストを更新（例: 5秒ごと）
+        setInterval(updatePosts, 5000);
+
         document.getElementById('postForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const thread_id = document.getElementById('thread_id').value;
@@ -34,14 +52,11 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(response => response.json()).then(data => {
                 if (data.result === 'success') {
-                    const post = document.createElement('li');
-                    post.innerHTML = `<strong>${data.internal_id}</strong> ${data.timestamp}:<br>${content}`;
-                    document.getElementById('posts').appendChild(post);
+                    updatePosts();  // ポストリストを更新
                     document.getElementById('content').value = '';
                 }
             });
         });
-
     </script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-<!-- thread_template.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -10,11 +9,7 @@
 <body>
     <h1>{{ thread.title }}</h1>
     <ul id="posts">
-        {% for post in thread.posts %}
-            <li>
-                <strong>{{ post.internal_id }}</strong> {{ post.timestamp }}:<br>{{ post.content }}
-            </li>
-        {% endfor %}
+        <!-- ここにポストが表示される -->
     </ul>
 
     <form id="postForm">
@@ -24,6 +19,29 @@
     </form>
 
     <script>
+        function updatePosts() {
+            const thread_id = document.getElementById('thread_id').value;
+            fetch(`/posts/${thread_id}`, {
+                method: 'GET'
+            }).then(response => response.json()).then(data => {
+                const postsList = document.getElementById('posts');
+                postsList.innerHTML = '';  // 現在のポストリストをクリア
+                data.forEach(post => {
+                    const postElement = document.createElement('li');
+                    postElement.innerHTML = `<strong>${post.internal_id}</strong> ${post.timestamp}:<br>${post.content}`;
+                    postsList.appendChild(postElement);
+                });
+            });
+        }
+
+        // ページロード時にポストを取得
+        window.onload = function() {
+            updatePosts();
+        }
+
+        // 定期的にポストリストを更新（例: 5秒ごと）
+        setInterval(updatePosts, 5000);
+
         document.getElementById('postForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const thread_id = document.getElementById('thread_id').value;
@@ -34,14 +52,11 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(response => response.json()).then(data => {
                 if (data.result === 'success') {
-                    const post = document.createElement('li');
-                    post.innerHTML = `<strong>${data.internal_id}</strong> ${data.timestamp}:<br>${content}`;
-                    document.getElementById('posts').appendChild(post);
+                    updatePosts();  // ポストリストを更新
                     document.getElementById('content').value = '';
                 }
             });
         });
-
     </script>
 </body>
 </html>

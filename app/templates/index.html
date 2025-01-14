@@ -15,55 +15,43 @@
     </form>
     
     <div id="threads">
-        {% for thread in threads %}
-            <div>
-                <span>{{ thread.title }}</span>
-                <a href="{{ url_for('thread', thread_id=thread.id) }}">
-                    <button>スレッドに入る</button>
-                </a>
-            </div>
-        {% endfor %}
-    </div>  
+        <!-- スレッドリストがここに表示される -->
+    </div>
 
     <script>
-	document.getElementById('threadForm').addEventListener('submit', function(e) {
-		e.preventDefault();
-		const threadTitle = document.getElementById('threadTitle').value;
-		const threadContent = document.getElementById('threadContent').value;
+        document.getElementById('threadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const threadTitle = document.getElementById('threadTitle').value;
+            const threadContent = document.getElementById('threadContent').value;
 
-		fetch('/create_thread', {
-			method: 'POST',
-			body: new URLSearchParams({'title': threadTitle, 'content': threadContent}),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}).then(response => {
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
-			return response.json();  // ここでエラーが起きないようにする
-		}).then(data => {
-			if (data.result === 'success') {
-				const threadLink = document.createElement('a');
-				threadLink.href = `/thread/${data.id}`;
-				threadLink.textContent = threadTitle;
-				const threadDiv = document.createElement('div');
-				threadDiv.appendChild(threadLink);
-				document.getElementById('threads').appendChild(threadDiv);
-				document.getElementById('threadTitle').value = '';
-				document.getElementById('threadContent').value = '';
-			} else {
-				console.error('Error:', data.message);
-			}
-		}).catch(error => {
-			console.error('Error:', error);
-		});
-	});
+            fetch('/create_thread', {
+                method: 'POST',
+                body: new URLSearchParams({'title': threadTitle, 'content': threadContent}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                if (data.result === 'success') {
+                    updateThreads();  // スレッドリストを更新
+                    document.getElementById('threadTitle').value = '';
+                    document.getElementById('threadContent').value = '';
+                } else {
+                    console.error('Error:', data.message);
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
 
-
-        window.onload = function() {
+        function updateThreads() {
             fetch('/threads', {
                 method: 'GET'
             }).then(response => response.json()).then(data => {
                 const threadsDiv = document.getElementById('threads');
+                threadsDiv.innerHTML = '';  // 現在のスレッドリストをクリア
                 data.forEach(thread => {
                     const threadElement = document.createElement('div');
                     threadElement.innerHTML = `<span>${thread.title}</span> <a href="/thread/${thread.id}"><button>スレッドに入る</button></a>`;
@@ -71,6 +59,13 @@
                 });
             });
         }
+
+        window.onload = function() {
+            updateThreads();  // ページロード時にスレッドリストを更新
+        }
+
+        // 定期的にスレッドリストを更新（例: 5秒ごと）
+        setInterval(updateThreads, 5000);
     </script>
 </body>
 </html>

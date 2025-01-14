@@ -81,9 +81,10 @@ def create_thread():
 
     return jsonify({'result': 'success', 'id': new_thread_id})
 
-
-
-
+@app.route('/threads', methods=['GET'])
+def get_threads():
+    threads = get_all_threads()
+    return jsonify(threads)
 
 #静的なファイルのルート定義
 @app.route('/favicon.ico')

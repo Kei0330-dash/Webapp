@@ -19,6 +19,7 @@ def initialize_database():
         CREATE TABLE IF NOT EXISTS posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             thread_id INTEGER,
+			internal_id INTEGER,
             content TEXT NOT NULL,
             timestamp TEXT NOT NULL,
             FOREIGN KEY (thread_id) REFERENCES threads (id)

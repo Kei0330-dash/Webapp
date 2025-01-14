@@ -18,6 +18,7 @@ flaskとかsqlite3とかは入れてください。pipすればok
 │   ├── __pycache__/<br>
 │   ├── __init__.py<br>
 │   ├── init_db.py<br>
+|   ├── models.py  ← 基本的な操作の実装をここに追加する<br>
 │   ├── routes.py  ← スレッド関連のルートをここに追加します<br>
 │<br>
 ├── /static<br>

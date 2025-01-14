@@ -23,9 +23,15 @@ def get_thread_by_id(thread_id):
 def create_new_thread(title, content):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
+    
+    # スレッドを作成
     cursor.execute("INSERT INTO threads (title) VALUES (?)", (title,))
     thread_id = cursor.lastrowid
-    cursor.execute("INSERT INTO posts (thread_id, content, timestamp) VALUES (?, ?, datetime('now', 'localtime'))", (thread_id, content,))
+    
+    # 新規スレッドの最初の投稿にinternal_idを設定
+    cursor.execute("INSERT INTO posts (thread_id, internal_id, content, timestamp) VALUES (?, ?, ?, datetime('now', 'localtime'))", 
+                   (thread_id, 1, content))
     conn.commit()
     conn.close()
     return thread_id
+

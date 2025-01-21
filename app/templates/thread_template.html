@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ thread.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
+</head>
+<body>
+    <h1>{{ thread.title }}</h1>
+    <ul id="posts">
+        <!-- ここにポストが表示される -->
+    </ul>
+
+    <form id="postForm">
+        <input type="hidden" id="thread_id" value="{{ thread.id }}">
+        <input type="text" id="content" placeholder="投稿内容" required>
+        <button type="submit">投稿</button>
+    </form>
+
+    <script>
+        function updatePosts() {
+            const thread_id = document.getElementById('thread_id').value;
+            fetch(`/posts/${thread_id}`, {
+                method: 'GET'
+            }).then(response => response.json()).then(data => {
+                const postsList = document.getElementById('posts');
+                postsList.innerHTML = '';  // 現在のポストリストをクリア
+                data.forEach(post => {
+                    const postElement = document.createElement('li');
+                    postElement.innerHTML = `<strong>${post.internal_id}</strong> ${post.timestamp}:<br>${post.content}`;
+                    postsList.appendChild(postElement);
+                });
+            });
+        }
+
+        // ページロード時にポストを取得
+        window.onload = function() {
+            updatePosts();
+        }
+
+        // 定期的にポストリストを更新（例: 5秒ごと）
+        setInterval(updatePosts, 5000);
+
+        document.getElementById('postForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const thread_id = document.getElementById('thread_id').value;
+            const content = document.getElementById('content').value;
+            fetch('/add', {
+                method: 'POST',
+                body: new URLSearchParams({'thread_id': thread_id, 'content': content}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(response => response.json()).then(data => {
+                if (data.result === 'success') {
+                    updatePosts();  // ポストリストを更新
+                    document.getElementById('content').value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

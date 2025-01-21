@@ -2,94 +2,70 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>掲示板</title>
-    <link rel="stylesheet" href="index.css">
-    <style>
-       
-    </style>
+    <title>ちゃんねる555</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#">ホーム</a></li>
-                <li><a href="#">サービス</a></li>
-                <li><a href="#">お問い合わせ</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <h1>掲示板</h1>
-        <form id="postForm">
-            <input type="text" id="content" placeholder="投稿内容" required>
-            <button type="submit">投稿</button>
-        </form>
-        <div id="posts"></div>
+    <h1>スレッドメニュー</h1>
+    <form id="threadForm" action="{{ url_for('create_thread') }}" method="post">
+        <input type="text" name="title" id="threadTitle" placeholder="タイトル">
+        <textarea name="content" id="threadContent" placeholder="内容"></textarea>
+        <button type="submit">スレッド作成</button>
+    </form>
+    
+    <div id="threads">
+        <!-- スレッドリストがここに表示される -->
+    </div>
 
-        <div class="container">
-          <div class="sidebar">
-            <!-- サイドバーコンテンツ -->
-            <p>ここにサイドバーのコンテンツを追加します。</p>
-          </div>
-          <div class="main-content">
-            <!-- メインコンテンツ -->
-            <p>ここにメインコンテンツを追加します。</p>
-          </div>
-        </div>
-        
+    <script>
+        document.getElementById('threadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const threadTitle = document.getElementById('threadTitle').value;
+            const threadContent = document.getElementById('threadContent').value;
 
-        <script>
-            document.getElementById('postForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const content = document.getElementById('content').value;
-                fetch('/add', {
-                    method: 'POST',
-                    body: new URLSearchParams({'content': content}),
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                }).then(response => response.json()).then(data => {
-                    if (data.result === 'success') {
-                        const post = document.createElement('div');
-                        post.className = 'post';
-                        post.innerHTML = `<strong>${data.id}</strong> ${formatDate(data.timestamp)}:<br>${convertToLinks(content)}`;
-                        document.getElementById('posts').appendChild(post);
-                        document.getElementById('content').value = '';
-                    }
+            fetch('/create_thread', {
+                method: 'POST',
+                body: new URLSearchParams({'title': threadTitle, 'content': threadContent}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                if (data.result === 'success') {
+                    updateThreads();  // スレッドリストを更新
+                    document.getElementById('threadTitle').value = '';
+                    document.getElementById('threadContent').value = '';
+                } else {
+                    console.error('Error:', data.message);
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        function updateThreads() {
+            fetch('/threads', {
+                method: 'GET'
+            }).then(response => response.json()).then(data => {
+                const threadsDiv = document.getElementById('threads');
+                threadsDiv.innerHTML = '';  // 現在のスレッドリストをクリア
+                data.forEach(thread => {
+                    const threadElement = document.createElement('div');
+                    threadElement.innerHTML = `<span>${thread.title}</span> <a href="/thread/${thread.id}"><button>スレッドに入る</button></a>`;
+                    threadsDiv.appendChild(threadElement);
                 });
             });
+        }
 
-            // ページが読み込まれた時に既存の投稿を取得して表示する
-            window.onload = function() {
-                fetch('/posts', {
-                    method: 'GET'
-                }).then(response => response.json()).then(data => {
-                   const postsDiv = document.getElementById('posts');
-                    data.forEach(post => {
-                        const postDiv = document.createElement('div');
-                        postDiv.className = 'post';
-                        postDiv.innerHTML = `<strong>${post.id}</strong> ${formatDate(post.timestamp)}:<br>${convertToLinks(post.content)}`;
-                        postsDiv.appendChild(postDiv);
-                    });
-                });
-            }
+        window.onload = function() {
+            updateThreads();  // ページロード時にスレッドリストを更新
+        }
 
-            // 日付を希望のフォーマットに変換する関数
-            function formatDate(timestamp) {
-                const date = new Date(timestamp);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                const seconds = String(date.getSeconds()).padStart(2, '0');
-                return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
-            }
-
-            // リンクをハイパーリンクに変換する関数
-            function convertToLinks(text) {
-                const urlRegex = /(https?:\/\/[^\s]+)/g;
-                return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
-            }
+        // 定期的にスレッドリストを更新（例: 5秒ごと）
+        setInterval(updateThreads, 5000);
     </script>
     </main>
 </body>

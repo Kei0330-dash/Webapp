@@ -1,34 +1,107 @@
-/* チェックリストを非表示 */
-#popup-close{
-    display: none;
-  }
-
-/* popup-closeチェックが押されたときに.popupに追記*/
-#popup-close:checked + .popup{
-    display: none;
-  }
-
-.popup {
-    box-sizing: border-box;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
-    position: relative;
-    margin: auto;
-    width: 50vw;
-    height: 50vh;
+ /* Bodyの設定 */
+ body {
+  font-family: Arial, sans-serif; /* 使用するフォントの設定 */
+  margin: 0; /* ボディ全体のマージンをゼロに設定 */
+  padding: 0; /* ボディ全体のパディングをゼロに設定 */
+  /*background: url('背景画像のパス') no-repeat center center fixed;  背景画像を中央に固定表示 */
+  background-size: cover; /* 背景画像をボディ全体にカバー */
 }
-.popup-content{
-    height: 100%;
-    margin: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-  }
 
-.icon-close {
-    background: #000;
-    color: #fff;
-    font-size: 10px;
-    position: absolute;
-    right: 0;
+/* ヘッダーの設定 */
+header {
+  position: fixed; /* ヘッダーを画面上部に固定 */
+  top: 0; /* 上部に配置 */
+  width: 100%; /* 幅を100%に設定 */
+  background-color: rgba(0, 0, 0, 0); /* 背景を透明に設定 */
+  padding: 20px 0; /* ヘッダーの上下に20pxのパディングを追加 */
+  z-index: 1000; /* 他の要素より前面に表示 */
 }
+
+
+/* ナビゲーションリストの設定 */
+nav ul {
+  list-style: none; /* リストスタイルを削除 */
+  display: flex; /* フレックスボックスで表示 */
+  justify-content: center; /* 水平方向に中央揃え */
+  margin: 0; /* マージンをゼロに設定 */
+  padding: 0; /* パディングをゼロに設定 */
+}
+
+/* リストアイテムの設定 */
+nav ul li {
+  margin: 0 15px; /* リストアイテムの左右に15pxのマージンを追加 */
+  position: relative; /* 擬似要素のための相対位置設定 */
+}
+
+/* リンクの設定 */
+nav ul li a {
+  color: #fff; /* テキストカラーを白に設定 */
+  text-decoration: none; /* テキストの下線を削除 */
+  font-size: 18px; /* フォントサイズを18pxに設定 */
+  filter: invert(1); /* 色をネガポジ反転 */
+  position: relative; /* 擬似要素との位置関係を設定 */
+  z-index: 1; /* 擬似要素の下に配置されないようにする */
+}
+
+/* ホバー時のリンクの設定 */
+nav ul li:hover a {
+  filter: none; /* ネガポジ反転を解除 */
+}
+
+/* ホバー時の円の設定 */
+nav ul li:hover::before {
+  content: ''; /* 擬似要素の内容を空に設定 */
+  position: absolute; /* 絶対位置に配置 */
+  top: 50%; /* 中央に配置 */
+  left: 50%; /* 中央に配置 */
+  width: 0; /* 初期幅をゼロに設定 */
+  height: 0; /* 初期高さをゼロに設定 */
+  background: rgba(0, 0, 0, 0.5); /* 半透明の四角を設定 */
+  border-radius: 0%; /* 円形に設定 */
+  transform: translate(-50%, -50%); /* 中心に配置 */
+  animation: expand 0.3s forwards; /* 0.3秒間のアニメーションを設定 */
+}
+
+/* アニメーションの設定 */
+@keyframes expand {
+  0% {
+      width: 0; /* アニメーション開始時の幅をゼロに設定 */
+      height: 0; /* アニメーション開始時の高さをゼロに設定 */
+      opacity: 0; /* アニメーション開始時の透明度をゼロに設定 */
+  }
+  100% {
+      width: 120px; /* アニメーション終了時の幅を100pxに設定 */
+      height: 50px; /* アニメーション終了時の高さを100pxに設定 */
+      opacity: 1; /* アニメーション終了時の透明度を1に設定 */
+  }
+}
+
+/* メインコンテンツの設定 */
+main {
+  padding-top: 80px; /* 固定ヘッダーの高さ分のスペースを確保 */
+}
+
+/* セクションの設定 */
+section {
+  text-align: center; /* テキストを中央揃え */
+  padding: 20px; /* セクションの上下に20pxのパディングを追加 */
+  background-color: rgba(255, 255, 255, 0.7); /* 半透明の背景色を設定 */
+  margin: 20px; /* セクションの外側に20pxのマージンを追加 */
+  border-radius: 10px; /* セクションの角を丸くする */
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 20%;
+  background-color: #f4f4f4;
+  padding: 10px;
+}
+
+.main-content {
+  width: 80%;
+  padding: 10px;
+}
+

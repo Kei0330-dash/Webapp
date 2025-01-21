@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
 </head>
 <body>
-    <h1>掲示板</h1>
+    <h1>スレッドメニュー</h1>
     <form id="threadForm" action="{{ url_for('create_thread') }}" method="post">
         <input type="text" name="title" id="threadTitle" placeholder="タイトル">
         <textarea name="content" id="threadContent" placeholder="内容"></textarea>

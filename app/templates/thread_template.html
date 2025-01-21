@@ -3,20 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ thread.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
 </head>
 <body>
-    <h1>{{ thread.title }}</h1>
-    <ul id="posts">
-        <!-- ここにポストが表示される -->
-    </ul>
 
-    <form id="postForm">
-        <input type="hidden" id="thread_id" value="{{ thread.id }}">
-        <input type="text" id="content" placeholder="投稿内容" required>
-        <button type="submit">投稿</button>
-    </form>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="http://127.0.0.1:5000/">ホーム</a></li>
+                <li><a href="#">利用規約</a></li>
+                <li><a href="#">お問い合わせ</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="sidebar">
+          <!-- サイドバーコンテンツ -->
+          <a href="https://example.com"><img src="https://via.placeholder.com/150" alt="広告"></a>
+          </div>
+          <div class="main-content">
+            <!-- メインコンテンツ -->
+            <h1 id="headermarge">{{ thread.title }}</h1>
+            <h1>{{ thread.title }}</h1>
+            <ul id="posts">
+            <!-- ここにポストが表示される -->
+            </ul>
+
+             <form id="postForm">
+            <input type="hidden" id="thread_id" value="{{ thread.id }}">
+            <input type="text" id="content" placeholder="投稿内容" required>
+            <button type="submit">投稿</button>
+            </form>
+            
+            
+          </div>
+        </div>
+
+    
+
+    
 
     <script>
         function updatePosts() {

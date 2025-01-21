@@ -3,23 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>ちゃんねる555</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
+
 </head>
 <body>
-    <h1>スレッドメニュー</h1>
-    <form id="threadForm" action="{{ url_for('create_thread') }}" method="post">
-        <input type="text" name="title" id="threadTitle" placeholder="タイトル">
-        <textarea name="content" id="threadContent" placeholder="内容"></textarea>
-        <button type="submit">スレッド作成</button>
-    </form>
-    
-    <div id="threads">
-        <!-- スレッドリストがここに表示される -->
+  
+  <header>
+    <nav>
+        <ul>
+            <li><a href="#">ホーム</a></li>
+            <li><a href="#">利用規約</a></li>
+            <li><a href="#">お問い合わせ</a></li>
+        </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <!-- サイドバーコンテンツ -->
+      <a href="https://example.com"><img src="https://via.placeholder.com/150" alt="広告"></a>
+      </div>
+      <div class="main-content">
+        <!-- メインコンテンツ -->
+        <h1>スレッドメニュー</h1>
+          <form id="threadForm" action="{{ url_for('create_thread') }}" method="post">
+              <input type="text" name="title" id="threadTitle" placeholder="タイトル">
+              <textarea name="content" id="threadContent" placeholder="内容"></textarea>
+              <button type="submit">スレッド作成</button>
+          </form>
+          
+          <div id="threads">
+            <!-- スレッドリストがここに表示される -->
+          </div>
+      </div>
     </div>
+    
 
     <script>
-        document.getElementById('threadForm').addEventListener('submit', function(e) {
+          document.getElementById('threadForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const threadTitle = document.getElementById('threadTitle').value;
             const threadContent = document.getElementById('threadContent').value;
@@ -49,14 +71,15 @@
         function updateThreads() {
             fetch('/threads', {
                 method: 'GET'
-            }).then(response => response.json()).then(data => {
-                const threadsDiv = document.getElementById('threads');
-                threadsDiv.innerHTML = '';  // 現在のスレッドリストをクリア
-                data.forEach(thread => {
-                    const threadElement = document.createElement('div');
-                    threadElement.innerHTML = `<span>${thread.title}</span> <a href="/thread/${thread.id}"><button>スレッドに入る</button></a>`;
-                    threadsDiv.appendChild(threadElement);
-                });
+            })
+            .then(response => response.json()).then(data => {
+              const threadsDiv = document.getElementById('threads');
+              threadsDiv.innerHTML = '';  // 現在のスレッドリストをクリア
+              data.forEach(thread => {
+                  const threadElement = document.createElement('div');
+                  threadElement.innerHTML = `<span>${thread.title}</span> <a href="/thread/${thread.id}"><button>"${thread.title}"に入る</button></a>`;
+                  threadsDiv.appendChild(threadElement);
+              });
             });
         }
 

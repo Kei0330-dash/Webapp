@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>てｔ</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>竹井</title>
+    <link rel="stylesheet" href="/static/index.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
@@ -11,24 +11,37 @@
     <header>
         <nav>
             <ul>
-                <li><a href="http://127.0.0.1:5000/">ホーム</a></li>
+				<l id="headermarge">竹井</l>
+                <li><a href="../">ホーム</a></li>
                 <li><a href="#">利用規約</a></li>
                 <li><a href="#">お問い合わせ</a></li>
             </ul>
         </nav>
-      </header>
+    </header>
+    <div class="container">
+        <div class="sidebar">
+          <!-- サイドバーコンテンツ -->
+          <a href="https://example.com"><img src="https://via.placeholder.com/150" alt="広告"></a>
+          </div>
+          <div class="main-content">
+            <!-- メインコンテンツ -->
+            <ul id="posts">
+            <!-- ここにポストが表示される -->
+            </ul>
 
+             <form id="postForm">
+            <input type="hidden" id="thread_id" value="1">
+            <input type="text" id="content" placeholder="投稿内容" required>
+            <button type="submit">投稿</button>
+            </form>
+            
+            
+          </div>
+        </div>
 
-    <h1>てｔ</h1>
-    <ul id="posts">
-        <!-- ここにポストが表示される -->
-    </ul>
+    
 
-    <form id="postForm">
-        <input type="hidden" id="thread_id" value="1">
-        <input type="text" id="content" placeholder="投稿内容" required>
-        <button type="submit">投稿</button>
-    </form>
+    
 
     <script>
         function updatePosts() {
@@ -52,7 +65,7 @@
         }
 
         // 定期的にポストリストを更新（例: 5秒ごと）
-        setInterval(updatePosts, 5000);
+        setInterval(updatePosts, 1000);
 
         document.getElementById('postForm').addEventListener('submit', function(e) {
             e.preventDefault();

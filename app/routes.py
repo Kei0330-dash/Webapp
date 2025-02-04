@@ -92,4 +92,7 @@ def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'templates'),
 							'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-
+# @app.route('/index.css')
+# def static():
+# 	return send_from_directory(os.path.join(app.root_path, 'templates'),
+# 							'index.css')

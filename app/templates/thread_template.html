@@ -11,7 +11,8 @@
     <header>
         <nav>
             <ul>
-                <li><a href="http://127.0.0.1:5000/">ホーム</a></li>
+				<l id="headermarge">{{ thread.title }}</l>
+                <li><a href="../">ホーム</a></li>
                 <li><a href="#">利用規約</a></li>
                 <li><a href="#">お問い合わせ</a></li>
             </ul>
@@ -24,8 +25,6 @@
           </div>
           <div class="main-content">
             <!-- メインコンテンツ -->
-            <h1 id="headermarge">{{ thread.title }}</h1>
-            <h1>{{ thread.title }}</h1>
             <ul id="posts">
             <!-- ここにポストが表示される -->
             </ul>
@@ -66,7 +65,7 @@
         }
 
         // 定期的にポストリストを更新（例: 5秒ごと）
-        setInterval(updatePosts, 5000);
+        setInterval(updatePosts, 1000);
 
         document.getElementById('postForm').addEventListener('submit', function(e) {
             e.preventDefault();

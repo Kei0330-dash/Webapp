@@ -2,20 +2,19 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>{{ thread.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('favicon') }}" type="image/x-icon">
+    <title>pokemon</title>
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
     <header>
         <nav>
             <ul>
-				<l id="headermarge">{{ thread.title }}</l>
+				<l id="headermarge">pokemon</l>
                 <li><a href="../">ホーム</a></li>
-				<li><a href="{{ url_for('static', filename='terms_of_service.html') }}">利用規約</a></li>
-				<li><a href="{{ url_for('static', filename='inquiry.html') }}">お問い合わせ</a></li>
-				<li><a href="{{ url_for('static', filename='markdown_describe.html') }}">お知らせ</a></li>
+                <li><a href="#">利用規約</a></li>
+                <li><a href="#">お問い合わせ</a></li>
             </ul>
         </nav>
     </header>
@@ -31,7 +30,7 @@
             </ul>
 
              <form id="postForm">
-            <input type="hidden" id="thread_id" value="{{ thread.id }}">
+            <input type="hidden" id="thread_id" value="12">
             <input type="text" id="content" placeholder="投稿内容" required>
             <button type="submit">投稿</button>
             </form>

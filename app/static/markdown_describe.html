@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdownの使い方</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>掲示板で使えるMarkdownの使い方</h1>
+    <p>以下は、掲示板で使用できるMarkdown形式の基本的な使い方です。</p>
+
+    <h2>見出し</h2>
+    <p>見出しを作成するには、テキストの前にハッシュ（<code>#</code>）を使用します。見出しのレベルに応じてハッシュの数を増やします。</p>
+    <pre><code># 見出しレベル1
+## 見出しレベル2
+### 見出しレベル3</code></pre>
+
+    <h2>強調</h2>
+    <p>テキストを<strong>強調</strong>するには、アスタリスク（<code>*</code>）またはアンダースコア（<code>_</code>）で囲みます。太字にするには2つ使用します。</p>
+    <pre><code>*斜体* または _斜体_
+**太字** または __太字__</code></pre>
+
+    <h2>リンク</h2>
+    <p>リンクを作成するには、テキストを角括弧（<code>[]</code>）で囲み、URLを丸括弧（<code>()</code>）で囲みます。</p>
+    <pre><code>[リンクのテキスト](https://example.com)</code></pre>
+
+    <h2>リスト</h2>
+    <p>リストを作成するには、箇条書きにはアスタリスク（<code>*</code>）、プラス（<code>+</code>）、またはハイフン（<code>-</code>）を使用します。番号付きリストには数字とピリオド（<code>.</code>）を使用します。</p>
+    <pre><code>* リスト項目1
+* リスト項目2
+    * ネストされたリスト項目
+
+1. 番号付きリスト項目1
+2. 番号付きリスト項目2</code></pre>
+
+    <h2>改行</h2>
+    <p>改行を挿入するには、行末に2つのスペースを入れるか、HTMLの<code>&lt;br&gt;</code>タグを使用します。</p>
+    <pre><code>ここで改行します。  
+次の行です。</code></pre>
+
+</body>
+</html>

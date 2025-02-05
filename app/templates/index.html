@@ -12,9 +12,10 @@
   <header>
     <nav>
         <ul>
-            <li><a href="#">ホーム</a></li>
-            <li><a href="#">利用規約</a></li>
-            <li><a href="#">お問い合わせ</a></li>
+            <li><a href="">ホーム</a></li>
+			<li><a href="{{ url_for('static', filename='terms_of_service.html') }}">利用規約</a></li>
+			<li><a href="{{ url_for('static', filename='inquiry.html') }}">お問い合わせ</a></li>
+			<li><a href="{{ url_for('static', filename='markdown_describe.html') }}">お知らせ</a></li>
         </ul>
     </nav>
   </header>

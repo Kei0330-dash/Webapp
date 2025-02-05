@@ -1,5 +1,6 @@
 import sqlite3
-
+import markdown
+import bleach
 DATABASE = "database.db"
 
 def get_all_threads():
@@ -35,3 +36,12 @@ def create_new_thread(title, content):
     conn.close()
     return thread_id
 
+def sanitize_and_convert_markdown(user_input):
+    # HTMLタグをサニタイズ（無害化）
+    sanitized_input = bleach.clean(user_input, tags=['br'], attributes={}, strip=True)
+    # MarkdownをHTMLに変換
+    html = markdown.markdown(sanitized_input, extensions=['extra'], output_format='html5')
+    # 許可するタグと属性を指定してサニタイズ
+    allowed_tags = ['p', 'ul', 'ol', 'li', 'strong', 'em', 'a', 'h1', 'h2', 'h3', 'br']
+    allowed_attributes = {'a': ['href']}
+    return bleach.clean(html, tags=allowed_tags, attributes=allowed_attributes, strip=True)

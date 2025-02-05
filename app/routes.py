@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, jsonify, redirect, url_for, send_from_directory
-from app.models import get_all_threads, get_thread_by_id, create_new_thread
+from app.models import get_all_threads, get_thread_by_id, create_new_thread, sanitize_and_convert_markdown
 import sqlite3
 import os
 from datetime import datetime
@@ -17,6 +17,7 @@ def index():
 def add_post():
     thread_id = request.form['thread_id']
     content = request.form['content']
+    sanitized_content = sanitize_and_convert_markdown(content)
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     
@@ -29,7 +30,7 @@ def add_post():
     
     # 新しい投稿を追加
     cursor.execute("INSERT INTO posts (thread_id, internal_id, content, timestamp) VALUES (?, ?, ?, datetime('now', 'localtime'))", 
-                   (thread_id, new_internal_id, content))
+                   (thread_id, new_internal_id, sanitized_content))
     conn.commit()
     post_id = cursor.lastrowid
     cursor.execute('SELECT timestamp FROM posts WHERE id = ?', (post_id,))
@@ -63,6 +64,7 @@ def thread(thread_id):
 def create_thread():
     title = request.form.get('title')
     content = request.form.get('content')
+    sanitized_content = sanitize_and_convert_markdown(content)
     if not title or not content:
         return jsonify({'result': 'error', 'message': 'Title and content are required'}), 400
 
@@ -70,7 +72,7 @@ def create_thread():
     thread = {
         'id': new_thread_id,
         'title': title,
-        'posts': [{'internal_id': 1, 'content': content, 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]
+        'posts': [{'internal_id': 1, 'content': sanitized_content, 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]
     }
     thread_filename = f'thread{new_thread_id}.html'
     thread_html = render_template('thread_template.html', thread=thread)
@@ -91,8 +93,3 @@ def get_threads():
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'templates'),
 							'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-# @app.route('/index.css')
-# def static():
-# 	return send_from_directory(os.path.join(app.root_path, 'templates'),
-# 							'index.css')
